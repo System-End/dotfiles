@@ -1,1 +1,6 @@
 --target=/home/end
+--ignore=^\.config/ags/@girs/
+--ignore=^\.config/zed/settings_backup\.json$
+--ignore=^\.config/QtProject\.conf$
+--ignore=^\.config/kwinoutputconfig\.json$
+--ignore=^\.config/kdeconnect(/.*)?$

@@ -5,3 +5,9 @@ apps/.config/JetBrains/**/*.db-shm
 apps/.config/JetBrains/**/*.db-wal
 apps/.config/obsidian/
 apps/.config/kwalletrc
+apps/.config/ags/@girs/
+apps/.config/zed/settings_backup.json
+plasma/.config/QtProject.conf
+plasma/.config/kwinoutputconfig.json
+plasma/.config/kdeconnect/*
+!plasma/.config/kdeconnect/.gitignore

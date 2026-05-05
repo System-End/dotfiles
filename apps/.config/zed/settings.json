@@ -7,19 +7,56 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "edit_predictions": {
+    "provider": "copilot"
+  },
+  "proxy": "",
+  "tabs": {
+    "git_status": true
+  },
+  "title_bar": {
+    "show_branch_status_icon": true
+  },
+  "diagnostics": {
+    "inline": {
+      "enabled": true
+    }
+  },
+  "prettier": {
+    "allowed": true
+  },
+  "semantic_tokens": "combined",
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false
+  },
+  "redact_private_values": true,
+  "agent_servers": {
+    "opencode": {
+      "type": "registry"
+    }
+  },
   "project_panel": {
+    "git_status_indicator": true,
+    "diagnostic_badges": true,
+    "bold_folder_labels": true,
     "dock": "left"
   },
   "outline_panel": {
-    "dock": "left"
+    "dock": "right"
   },
   "collaboration_panel": {
-    "dock": "left"
+    "dock": "right"
   },
   "git_panel": {
     "dock": "left"
   },
   "agent": {
+    "profiles": {
+      
+    },
+    "cancel_generation_on_terminal_stop": false,
+    "sidebar_side": "left",
     "dock": "right",
     "favorite_models": [
       {
@@ -84,9 +121,9 @@
     "default_profile": "write",
     "default_model": {
       "effort": "high",
-      "enable_thinking": false,
+      "enable_thinking": true,
       "provider": "copilot_chat",
-      "model": "gpt-5-mini"
+      "model": "gpt-5.3-codex"
     },
     "model_parameters": []
   },
@@ -100,6 +137,6 @@
     "dark": "Kleur Dark"
   },
   "auto_install_extensions": {
-    "wakatime": true
+    "wakatime": false
   }
 }

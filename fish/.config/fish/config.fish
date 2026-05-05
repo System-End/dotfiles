@@ -12,10 +12,6 @@ if not string match -q -- $PNPM_HOME $PATH
 end
 # pnpm end
 
-# terminal-wakatime setup
-set -gx PATH "$HOME/.wakatime" $PATH
-terminal-wakatime init fish | source
-
 status --is-interactive; and . (fnm env --use-on-cd | psub)
 
 # opencode
