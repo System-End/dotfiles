@@ -8,10 +8,16 @@ Item {
 
     property int unread: 0
     property var history: []
+    property string mode: "normal"
     property var activateFn
+    property var setModeFn
     property var barWindow
     signal cleared()
     signal historyCleared()
+
+    function toggleMode() {
+        if (setModeFn) setModeFn(mode === "dnd" ? "normal" : "dnd")
+    }
 
     Rectangle {
         anchors.fill: parent
@@ -22,16 +28,21 @@ Item {
             id: ma
             anchors.fill: parent
             hoverEnabled: true
-            onClicked: {
-                cleared()
-                panel.visible = !panel.visible
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+            onClicked: (mouse) => {
+                if (mouse.button === Qt.RightButton) {
+                    toggleMode()
+                } else {
+                    cleared()
+                    panel.visible = !panel.visible
+                }
             }
         }
 
         Text {
             anchors.centerIn: parent
-            text: "󰂚"
-            color: unread > 0 ? "#ec5f89" : "#7f849c"
+            text: mode === "dnd" ? "󰂛" : "󰂚"
+            color: mode === "dnd" ? "#7f849c" : (unread > 0 ? "#ec5f89" : "#7f849c")
             font.family: "Maple Mono NF"
             font.pixelSize: 15
         }
@@ -59,7 +70,7 @@ Item {
         implicitHeight: Math.min(headerH + listH, 480)
         color: "transparent"
 
-        readonly property int headerH: 56
+        readonly property int headerH: 72
         readonly property int perNotif: 62
         readonly property int listH: history.length === 0 ? 30 : history.length * perNotif
 
@@ -70,29 +81,55 @@ Item {
             border.color: Qt.rgba(0.306, 0.788, 0.690, 0.15)
             border.width: 1
 
-            Item {
+            Column {
                 id: header
                 anchors { left: parent.left; right: parent.right; top: parent.top; margins: 12 }
-                height: 18
+                height: 38
+                spacing: 6
 
-                Text {
-                    anchors.left: parent.left
-                    anchors.verticalCenter: parent.verticalCenter
-                    text: "Notifications"
-                    color: "#cdd6f4"
-                    font.family: "Maple Mono NF"
-                    font.pixelSize: 13
-                    font.bold: true
+                Item {
+                    width: parent.width
+                    height: 18
+
+                    Text {
+                        anchors.left: parent.left
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: "Notifications"
+                        color: "#cdd6f4"
+                        font.family: "Maple Mono NF"
+                        font.pixelSize: 13
+                        font.bold: true
+                    }
+
+                    Text {
+                        anchors.right: parent.right
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: "Clear all"
+                        color: "#7f849c"
+                        font.family: "Maple Mono NF"
+                        font.pixelSize: 11
+                        MouseArea { anchors.fill: parent; onClicked: { historyCleared(); cleared() } }
+                    }
                 }
 
-                Text {
-                    anchors.right: parent.right
-                    anchors.verticalCenter: parent.verticalCenter
-                    text: "Clear all"
-                    color: "#7f849c"
-                    font.family: "Maple Mono NF"
-                    font.pixelSize: 11
-                    MouseArea { anchors.fill: parent; onClicked: { historyCleared(); cleared() } }
+                Rectangle {
+                    width: parent.width
+                    height: 16
+                    color: mode === "dnd" ? Qt.rgba(0.925, 0.373, 0.537, 0.12) : Qt.rgba(0.306, 0.788, 0.690, 0.10)
+                    radius: 6
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: mode === "dnd" ? "DND: toasts muted" : "Normal: toasts shown"
+                        color: mode === "dnd" ? "#ec5f89" : "#4ec9b0"
+                        font.family: "Maple Mono NF"
+                        font.pixelSize: 10
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: toggleMode()
+                    }
                 }
             }
 

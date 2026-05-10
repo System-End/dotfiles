@@ -7,8 +7,10 @@ import "modules"
 Scope {
     property int notifUnread: 0
     property var notifHistory: []
+    property string notifMode: "normal"
     property real dimAmount: 0.0
     property var notifActivateFn
+    property var notifSetModeFn
     signal notifCleared()
     signal notifHistoryCleared()
     signal dimChanged(real val)
@@ -88,7 +90,9 @@ Scope {
                                 NotifBell {
                                     unread: notifUnread
                                     history: notifHistory
+                                    mode: notifMode
                                     activateFn: notifActivateFn
+                                    setModeFn: notifSetModeFn
                                     barWindow: barWin
                                     onCleared: notifCleared()
                                     onHistoryCleared: notifHistoryCleared()

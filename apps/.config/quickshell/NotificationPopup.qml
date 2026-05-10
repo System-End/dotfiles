@@ -10,6 +10,7 @@ Scope {
 
     property var history: []
     property int unread: 0
+    property string mode: "normal"
     property string pendingLaunchId: ""
 
     function runDesktopEntry(desktopEntry) {
@@ -176,7 +177,25 @@ Scope {
         unread = 0
     }
 
+    function setMode(nextMode) {
+        mode = nextMode === "dnd" ? "dnd" : "normal"
+        saveModeProc.command = [
+            "bash",
+            "-lc",
+            "mkdir -p ~/.local/state/quickshell && printf '%s\n' " + mode + " > ~/.local/state/quickshell/notification-mode",
+        ]
+        saveModeProc.running = true
+    }
+
     Process { id: launchProc }
+    Process { id: saveModeProc }
+    Process {
+        id: loadModeProc
+        command: ["bash", "-lc", "cat ~/.local/state/quickshell/notification-mode 2>/dev/null || true"]
+        stdout: StdioCollector {
+            onStreamFinished: root.mode = this.text.trim() === "dnd" ? "dnd" : "normal"
+        }
+    }
     Process {
         id: focusProc
         onExited: (code) => {
@@ -184,6 +203,8 @@ Scope {
             pendingLaunchId = ""
         }
     }
+
+    Component.onCompleted: loadModeProc.running = true
 
     NotificationServer {
         id: server
@@ -209,13 +230,15 @@ Scope {
             root.history = arr
             root.unread++
 
-            toastModel.append({
-                id: entry.id,
-                app: entry.app,
-                summary: entry.summary,
-                body: entry.body,
-                desktopEntry: entry.desktopEntry,
-            })
+            if (root.mode !== "dnd") {
+                toastModel.append({
+                    id: entry.id,
+                    app: entry.app,
+                    summary: entry.summary,
+                    body: entry.body,
+                    desktopEntry: entry.desktopEntry,
+                })
+            }
 
             var ms = notif.expireTimeout > 0 ? notif.expireTimeout : 8000
             expireTimer.createObject(root, { notifId: notif.id, delay: ms })
